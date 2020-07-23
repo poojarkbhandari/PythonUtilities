@@ -10,6 +10,7 @@ class ObjRequestClass(object):
         'Password': '9921'
     }
 
+    #Checking json input
     def __validate_json_input(self, req):
         try:
             self.__json_content = json.loads(req.stream.read())
@@ -20,6 +21,7 @@ class ObjRequestClass(object):
             print('json from client is not validated!')
             return False
 
+    #Get request to Check Account Balance
     def on_get(self, req, res):
         res.status = falcon.HTTP_200
 
@@ -45,6 +47,7 @@ class ObjRequestClass(object):
 
         res.body = json.dumps(output)
 
+    #Post request for Cash Withdrawal and Cash Deposit Actions
     def on_post(self, req, res):
         res.status = falcon.HTTP_200
 
@@ -92,6 +95,7 @@ class ObjRequestClass(object):
 
         res.body = json.dumps(output)
 
+    #Put Request for Change Passward
     def on_put(self, req, res):
         res.status = falcon.HTTP_200
 
