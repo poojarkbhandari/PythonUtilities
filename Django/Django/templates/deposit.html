@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{action}}</h2>
+
+<h3>
+    <form action="displaydeposit" method='post'>
+        {% csrf_token %}
+        Account Number : <input type="text" name="accno"><br>
+        Password : <input type="password" name="pwd"><br>
+        Amount : <input type="text" name="amt"><br><br>
+        <input type="submit" value="Cash Deposit">
+    </form>
+</h3>
+{% endblock %}

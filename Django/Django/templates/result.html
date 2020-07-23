@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>{{action}}</h2><br>
+<h3>
+    {{msg}}<br><br>
+    Account Number : {{user.acc_no}}<br>
+    Name           : {{user.name}}<br>
+    Balance        : {{user.balance}}<br>
+    {{error}}<br>
+</h3>
+
+{% endblock %}

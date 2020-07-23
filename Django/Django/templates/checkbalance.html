@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{action}}</h2>
+
+<h3>
+    <form action="displaybalance" method='post'>
+        {% csrf_token %}
+        Account Number : <input type="text" name="accno"><br>
+        Password : <input type="password" name="pwd"><br><br>
+        <input type="submit" value="Check Balance">
+    </form>
+</h3>
+{% endblock %}
