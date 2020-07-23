@@ -6,7 +6,8 @@ class ObjRequestClass(object):
     user = {
         'AccNo': 4321,
         'Name': 'user1',
-        'Balance': 2000
+        'Balance': 2000,
+        'Password': '9921'
     }
 
     def __validate_json_input(self, req):
@@ -30,14 +31,14 @@ class ObjRequestClass(object):
         }
 
         if(validated == True):
-            if 'AccNo' in self.__json_content:
-                if(self.__json_content['AccNo'] == self.user['AccNo']):
+            if 'AccNo' in self.__json_content and 'Password' in self.__json_content:
+                if((self.__json_content['AccNo'] == self.user['AccNo']) and (self.__json_content['Password'] == self.user['Password'])):
                     output['msg'] = 'User Details \n Account Number : {0}\n Name : {1}\n Balance : {2}'.format(self.user['AccNo'], self.user['Name'], self.user['Balance'])  
                 else:
-                    output['msg'] = 'This Account number not exists.'                      
+                    output['msg'] = 'Please check Account number and password.'                      
             else:
                 output['status'] = 404
-                output['msg'] = 'json input need AccNo params'                
+                output['msg'] = 'json input need AccNo and Password params'                
         else:
             output['status'] = 404
             output['msg'] = 'json input is not validated'
@@ -59,26 +60,63 @@ class ObjRequestClass(object):
         if(validated == True):
             if 'AccNo' not in self.__json_content:
                 valid = False
+            if 'Password' not in self.__json_content:
+                valid = False
             if 'Action' not in self.__json_content:
                 valid = False
             if 'Amount' not in self.__json_content:
                 valid = False
 
             if(valid == True):
-                if(self.__json_content['AccNo'] == self.user['AccNo']):
+                if((self.__json_content['AccNo'] == self.user['AccNo']) and (self.__json_content['Password'] == self.user['Password'])):
                     if(self.__json_content['Action'] == 'withdrawal'):
-                        self.user['Balance'] = int(self.user['Balance']) - int(self.__json_content['Amount'])
+                        if(self.user['Balance'] > self.__json_content['Amount']):
+                            self.user['Balance'] = int(self.user['Balance']) - int(self.__json_content['Amount'])
 
-                        output['msg'] = 'Withdrawal Successful! \n Current Balance : {0}'.format(self.user['Balance'])
+                            output['msg'] = 'Withdrawal Successful! \n Current Balance : {0}'.format(self.user['Balance'])
+                        else:
+                            output['msg'] = 'Insufficient balance'
+                        
                     elif(self.__json_content['Action'] == 'deposit'):
                         self.user['Balance'] = int(self.user['Balance']) + int(self.__json_content['Amount'])
 
                         output['msg'] = 'Deposit Successful! \n Current Balance : {0}'.format(self.user['Balance'])
                 else:
-                    output['msg'] = 'This Account number not exists.'
+                    output['msg'] = 'Please check Account number and Password.'
             else:
                 output['status'] = 404
-                output['msg'] = 'json input need AccNo, Action and Amount params'
+                output['msg'] = 'json input need AccNo, Password, Action and Amount params'
+        else:
+            output['status'] = 404
+            output['msg'] = 'json input is not validated'
+
+        res.body = json.dumps(output)
+
+    def on_put(self, req, res):
+        res.status = falcon.HTTP_200
+
+        validated = self.__validate_json_input(req)
+
+        output = {
+            'status' : 200,
+            'msg' : None
+        }
+
+        update = False
+
+        if(validated == True):
+            if 'AccNo' in self.__json_content and 'OldPassword' in self.__json_content and 'NewPassword' in self.__json_content:
+                if(self.__json_content['AccNo'] == self.user['AccNo']):
+                    if(self.__json_content['OldPassword'] == self.user['Password']):
+                        self.user['Password'] = self.__json_content['NewPassword']
+                        output['msg'] = 'Password changed successfully.' 
+                    else:
+                        output['msg'] = 'Wrong Old Password.'  
+                else:
+                    output['msg'] = 'This Account number not exists.'                    
+            else:
+                output['status'] = 404
+                output['msg'] = 'json input need AccNo, OldPassword, NewPassword params'
         else:
             output['status'] = 404
             output['msg'] = 'json input is not validated'
