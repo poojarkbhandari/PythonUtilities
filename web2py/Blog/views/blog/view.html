@@ -1,0 +1,13 @@
+{{extend 'layout.html'}}
+<h1>VIEW BLOG</h1>
+{{ for x in rows: }}
+<div class='row' style="margin:20px;">
+    <p>
+        <b>{{=x.id}} .      {{=x.blog_title}}</b><br><br>
+        <b>Category : </b>
+        {{=x.blog_category}}<br>
+        {{=x.blog_details}}<br>
+        {{=x.blog_date_posted}}<br>
+    </p>
+</div>
+{{pass}}
